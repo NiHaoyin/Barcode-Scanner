@@ -14,12 +14,22 @@ book = {
 res_buffer = list()
 file_buffer = list()
 # 新建命令
-command = input("->")
+command = ""
 while command != "exit":
+    command = input("->")
     c = command.split(" ")
     if c[0] not in book:
         print("wrong command!")
         continue
+    # help命令单独处理
+    if c[0] == "help":
+        commands.call_help()
+        continue
+    # exit命令单独处理
+    elif c[0] == "exit":
+        commands.exit_program()
+        break
+    # 处理scan,scanall和saveto命令
     # 得到图片路径
     path = c[1]
     # 得到执行函数

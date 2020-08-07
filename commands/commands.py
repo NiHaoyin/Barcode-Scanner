@@ -16,35 +16,44 @@ scan_failure = "Unable to scan the code"
 
 # 输入图片路径，返回填入扫描结果的buffer
 def scan(img_path, res_buffer, file_buffer):
-    decoded_barcode = scanner.scan_barcode(img_path)
-    origin_len = len(res_buffer)
-    res_buffer.append(decoded_barcode)
-    file_buffer.append(img_path)
-    current_len = len(res_buffer)
-    print("Finish scanning. Add %d decoded message." % (current_len - origin_len))
+    try:
+        decoded_barcode = scanner.scan_barcode(img_path)
+        origin_len = len(res_buffer)
+        res_buffer.append(decoded_barcode)
+        file_buffer.append(img_path)
+        current_len = len(res_buffer)
+        print("Finish scanning. Add %d decoded message." % (current_len - origin_len))
+    except:
+        print("Fail to scan the file.")
 
 
 # 输入文件夹路径和buffer，返回填入扫描结果的buffer
 def scan_all(dir_path, res_buffer, file_buffer):
-    files = listdir(dir_path)  # 得到文件夹下所有文件的名称
-    origin_len = len(res_buffer)
-    for file in files:
-        file = dir_path + '/' + file
-        decoded_barcode = scanner.scan_barcode(file)
-        # 如果扫描结果为空，则不将扫描结果填入buffer
-        # if decoded_barcode is []:
-        #     decoded_barcode.append("Null")
-        res_buffer.append(decoded_barcode)
-        file_buffer.append(file)
-    current_len = len(res_buffer)
-    print("Finish scanning. Add %d decoded message." % (current_len-origin_len))
+    try:
+        files = listdir(dir_path)  # 得到文件夹下所有文件的名称
+        origin_len = len(res_buffer)
+        for file in files:
+            file = dir_path + '/' + file
+            decoded_barcode = scanner.scan_barcode(file)
+            # 如果扫描结果为空，则不将扫描结果填入buffer
+            # if decoded_barcode is []:
+            #     decoded_barcode.append("Null")
+            res_buffer.append(decoded_barcode)
+            file_buffer.append(file)
+        current_len = len(res_buffer)
+        print("Finish scanning. Add %d decoded message." % (current_len-origin_len))
+    except:
+        print("Fail to scan the dir.")
 
 
 def save(path, res_buffer, file_buffer):
-    path = path + '.csv'
-    np.savetxt(path, np.column_stack((file_buffer, res_buffer)), delimiter=',',
-               fmt='%s', header='File name,Decoded message', comments='')
-    print('File saved')
+    try:
+        path = path + '.csv'
+        np.savetxt(path, np.column_stack((file_buffer, res_buffer)), delimiter=',',
+                   fmt='%s', header='File name,Decoded message', comments='')
+        print('File saved')
+    except:
+        print("Fail to save.")
 
 
 def show_buffer(path, res_buffer, file_buffer):
